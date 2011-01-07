@@ -1,5 +1,7 @@
 package ebank.bank;
 
+import java.util.Date;
+
 /**
  * Classe représentant une demande de transaction
  * @author alex
@@ -7,11 +9,26 @@ package ebank.bank;
  */
 public class TransactionRequest {
 
+//	/**
+//	 * Numéro de la carte
+//	 */
+//	private CardNumber card_number;
+	
 	/**
 	 * Numéro de la carte
 	 */
-	private CardNumber card_number;
+	private Long card_number;
 	
+	/**
+	 * Numéro CCV de la carte
+	 */
+	private Integer ccv;
+	
+	/**
+	 * Date de la carte
+	 */
+	private Date date;
+		
 	/**
 	 * Montant de la transaction
 	 */
@@ -23,12 +40,28 @@ public class TransactionRequest {
 	private Integer dealer_account_number;	
 	
 	
-	public CardNumber getCard_number() {
+	public Long getCard_number() {
 		return card_number;
 	}
 
-	public void setCard_number(CardNumber cardNumber) {
+	public void setCard_number(Long cardNumber) {
 		card_number = cardNumber;
+	}
+
+	public Integer getCcv() {
+		return ccv;
+	}
+
+	public void setCcv(Integer ccv) {
+		this.ccv = ccv;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 	public Float getAmount() {
@@ -48,7 +81,6 @@ public class TransactionRequest {
 	}
 
 	public TransactionRequest(Long card_number, Integer dealer_account_number, Float amount) {
-		this.card_number=new CardNumber(card_number);
 		this.dealer_account_number=dealer_account_number;
 		this.amount=amount;
 	}
