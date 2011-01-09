@@ -6,7 +6,7 @@ import org.omg.PortableServer.POA;
  * Generated from IDL interface "Acquisition".
  *
  * @author JacORB IDL compiler V 2.3.1, 27-May-2009
- * @version generated at 12 déc. 2010 20:29:47
+ * @version generated at 9 janv. 2011 18:23:44
  */
 
 public class AcquisitionPOATie
@@ -48,9 +48,9 @@ public class AcquisitionPOATie
 		}
 		return super._default_POA();
 	}
-	public boolean process(long card_number, float amount, int dealer_account_number) throws ebank.InsufficientBalanceException,ebank.CardNumberException
+	public boolean process(ebank.TransactionRequest transaction)
 	{
-		return _delegate.process(card_number,amount,dealer_account_number);
+		return _delegate.process(transaction);
 	}
 
 }

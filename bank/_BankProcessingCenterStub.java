@@ -5,7 +5,7 @@ package ebank.bank;
  * Generated from IDL interface "BankProcessingCenter".
  *
  * @author JacORB IDL compiler V 2.3.1, 27-May-2009
- * @version generated at 12 déc. 2010 20:29:47
+ * @version generated at 9 janv. 2011 18:23:44
  */
 
 public class _BankProcessingCenterStub
@@ -101,7 +101,7 @@ public class _BankProcessingCenterStub
 
 	}
 
-	public boolean getBalance(long card_number) throws ebank.CardNumberException
+	public float getBalance(long card_number) throws ebank.CardNumberException
 	{
 		while(true)
 		{
@@ -114,7 +114,7 @@ public class _BankProcessingCenterStub
 				_os = _request( "getBalance", true);
 				_os.write_ulonglong(card_number);
 				_is = _invoke(_os);
-				boolean _result = _is.read_boolean();
+				float _result = _is.read_float();
 				return _result;
 			}
 			catch( org.omg.CORBA.portable.RemarshalException _rx ){}
@@ -166,7 +166,7 @@ public class _BankProcessingCenterStub
 			if( _so == null )
 				throw new org.omg.CORBA.UNKNOWN("local invocations not supported!");
 			BankProcessingCenterOperations _localServant = (BankProcessingCenterOperations)_so.servant;
-			boolean _result;
+			float _result;
 			try
 			{
 				_result = _localServant.getBalance(card_number);

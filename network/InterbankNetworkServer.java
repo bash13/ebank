@@ -5,14 +5,32 @@ import org.omg.CosNaming.NamingContextExtHelper;
 
 import ebank.CardNumberException;
 import ebank.InsufficientBalanceException;
+import ebank.TransactionRequest;
+import ebank.data.Database;
 
 class InterbankNetworkImpl extends InterbankNetworkPOA {
 
+	/**
+	 * Connexion à la base de données
+	 */
+	private Database db;
+
+	/**
+	 * Constructeur. Crée la connexion à la base.
+	 */
+	public InterbankNetworkImpl()
+	{
+		 db = new Database();
+	}
+	
+	/**
+	 * Transfert de transaction vers la banque emettrice
+	 */
 	@Override
-	public boolean transfer(long cardNumber, float amount)
-			throws InsufficientBalanceException, CardNumberException {
+	public boolean transfer(TransactionRequest transaction) {
 		return false;
 	}
+	
 }
 
 /**

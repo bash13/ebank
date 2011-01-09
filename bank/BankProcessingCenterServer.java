@@ -29,11 +29,13 @@ class BankProcessingCenterImpl extends BankProcessingCenterPOA {
 	/**
 	 * Renvoie le solde du compte demandée
 	 */
+
+
 	@Override
-	public boolean getBalance(long cardNumber) throws CardNumberException {
-		if (!checkCardNumber(cardNumber))
+	public float getBalance(long card_number) throws CardNumberException {
+		if (!checkCardNumber(card_number))
 			throw new CardNumberException("Carte inconnue");
-		return false;
+		return 0;
 	}
 	
 	/**
@@ -52,7 +54,6 @@ class BankProcessingCenterImpl extends BankProcessingCenterPOA {
 	public static void main(String[] args) {
 
 	}
-
 }
 
 /**

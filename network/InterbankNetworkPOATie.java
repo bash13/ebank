@@ -6,7 +6,7 @@ import org.omg.PortableServer.POA;
  * Generated from IDL interface "InterbankNetwork".
  *
  * @author JacORB IDL compiler V 2.3.1, 27-May-2009
- * @version generated at 12 déc. 2010 20:29:47
+ * @version generated at 9 janv. 2011 18:23:44
  */
 
 public class InterbankNetworkPOATie
@@ -48,9 +48,9 @@ public class InterbankNetworkPOATie
 		}
 		return super._default_POA();
 	}
-	public boolean transfer(long card_number, float amount) throws ebank.InsufficientBalanceException,ebank.CardNumberException
+	public boolean transfer(ebank.TransactionRequest transaction)
 	{
-		return _delegate.transfer(card_number,amount);
+		return _delegate.transfer(transaction);
 	}
 
 }

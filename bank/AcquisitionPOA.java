@@ -5,7 +5,7 @@ package ebank.bank;
  * Generated from IDL interface "Acquisition".
  *
  * @author JacORB IDL compiler V 2.3.1, 27-May-2009
- * @version generated at 12 déc. 2010 20:29:47
+ * @version generated at 9 janv. 2011 18:23:44
  */
 
 public abstract class AcquisitionPOA
@@ -39,24 +39,9 @@ public abstract class AcquisitionPOA
 		{
 			case 0: // process
 			{
-			try
-			{
-				long _arg0=_input.read_ulonglong();
-				float _arg1=_input.read_float();
-				int _arg2=_input.read_long();
+				ebank.TransactionRequest _arg0=ebank.TransactionRequestHelper.read(_input);
 				_out = handler.createReply();
-				_out.write_boolean(process(_arg0,_arg1,_arg2));
-			}
-			catch(ebank.InsufficientBalanceException _ex0)
-			{
-				_out = handler.createExceptionReply();
-				ebank.InsufficientBalanceExceptionHelper.write(_out, _ex0);
-			}
-			catch(ebank.CardNumberException _ex1)
-			{
-				_out = handler.createExceptionReply();
-				ebank.CardNumberExceptionHelper.write(_out, _ex1);
-			}
+				_out.write_boolean(process(_arg0));
 				break;
 			}
 		}

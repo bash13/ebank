@@ -5,6 +5,7 @@ import org.omg.CosNaming.NamingContextExtHelper;
 
 import ebank.CardNumberException;
 import ebank.InsufficientBalanceException;
+import ebank.TransactionRequest;
 
 class AuthorizationImpl extends AuthorizationPOA {
 
@@ -23,15 +24,16 @@ class AuthorizationImpl extends AuthorizationPOA {
 	 */
 	
 	private static final String interbank_network_name = "SIT";
+	
 	/**
 	 * Demande de transaction
 	 */
-	
 	@Override
-	public boolean process(long cardNumber, float amount)
-			throws InsufficientBalanceException, CardNumberException {
+	public boolean process(TransactionRequest transaction) {
+		// TODO Auto-generated method stub
 		return false;
 	}
+	
 	
 	public boolean checkClientAccount(Long card_number, Float amount) {
 		return false;

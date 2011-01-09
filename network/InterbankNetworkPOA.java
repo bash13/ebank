@@ -5,7 +5,7 @@ package ebank.network;
  * Generated from IDL interface "InterbankNetwork".
  *
  * @author JacORB IDL compiler V 2.3.1, 27-May-2009
- * @version generated at 12 déc. 2010 20:29:47
+ * @version generated at 9 janv. 2011 18:23:44
  */
 
 public abstract class InterbankNetworkPOA
@@ -39,23 +39,9 @@ public abstract class InterbankNetworkPOA
 		{
 			case 0: // transfer
 			{
-			try
-			{
-				long _arg0=_input.read_ulonglong();
-				float _arg1=_input.read_float();
+				ebank.TransactionRequest _arg0=ebank.TransactionRequestHelper.read(_input);
 				_out = handler.createReply();
-				_out.write_boolean(transfer(_arg0,_arg1));
-			}
-			catch(ebank.InsufficientBalanceException _ex0)
-			{
-				_out = handler.createExceptionReply();
-				ebank.InsufficientBalanceExceptionHelper.write(_out, _ex0);
-			}
-			catch(ebank.CardNumberException _ex1)
-			{
-				_out = handler.createExceptionReply();
-				ebank.CardNumberExceptionHelper.write(_out, _ex1);
-			}
+				_out.write_boolean(transfer(_arg0));
 				break;
 			}
 		}

@@ -1,11 +1,9 @@
 package ebank.bank;
 
-import java.net.NetworkInterface;
+import org.omg.CosNaming.NamingContextExt;
+import org.omg.CosNaming.NamingContextExtHelper;
 
-import org.omg.CosNaming.*;
-
-import ebank.CardNumberException;
-import ebank.InsufficientBalanceException;
+import ebank.TransactionRequest;
 import ebank.network.InterbankNetwork;
 import ebank.network.InterbankNetworkHelper;
 
@@ -54,11 +52,8 @@ class AcquisitionImpl extends AcquisitionPOA {
 	 * 
 	 */
 	@Override
-	public boolean process(long cardNumber, float amount,
-			int dealerAccountNumber) throws InsufficientBalanceException,
-			CardNumberException {
-		trans_request=new TransactionRequest(cardNumber, dealerAccountNumber, amount);
-		if (!checkBin(trans_request.getCard_number())) {
+	public boolean process(TransactionRequest transaction) {
+		if (!checkBin(trans_request.getBin())) {
 			//Banques différentes
 			//On renvoie vers le réseau interbancaire
 			try	{
@@ -66,7 +61,7 @@ class AcquisitionImpl extends AcquisitionPOA {
 				org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init();
 				NamingContextExt nc = NamingContextExtHelper.narrow(orb.resolve_initial_references("NameService"));
 				in = InterbankNetworkHelper.narrow(nc.resolve(nc.to_name(interbank_network_name)));
-				in.transfer(trans_request.getCard_number().getCardNumberOrigin(), trans_request.getAmount());
+				in.transfer(trans_request);
 			}
 			catch (Exception e)	{
 				e.printStackTrace();
@@ -84,8 +79,8 @@ class AcquisitionImpl extends AcquisitionPOA {
 	 * @param bin
 	 * @return
 	 */
-	private boolean checkBin(CardNumber card) {
-		return card.getBin()==BIN;
+	private boolean checkBin(Integer card) {
+		return card==BIN;
 	}
 	
 	/**
@@ -97,7 +92,7 @@ class AcquisitionImpl extends AcquisitionPOA {
 			org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init();
 			NamingContextExt nc = NamingContextExtHelper.narrow(orb.resolve_initial_references("NameService"));
 			bpc = BankProcessingCenterHelper.narrow(nc.resolve(nc.to_name(bank_processing_center_name)));
-			bpc.credit(trans_request.getCard_number().getCardNumberOrigin(), trans_request.getAmount());
+			bpc.credit(trans_request.getCard_number(), trans_request.getAmount());
 		}
 		catch (Exception e)	{
 			e.printStackTrace();
