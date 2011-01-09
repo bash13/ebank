@@ -92,7 +92,7 @@ class AcquisitionImpl extends AcquisitionPOA {
 			org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init();
 			NamingContextExt nc = NamingContextExtHelper.narrow(orb.resolve_initial_references("NameService"));
 			bpc = BankProcessingCenterHelper.narrow(nc.resolve(nc.to_name(bank_processing_center_name)));
-			bpc.credit(trans_request.getCard_number(), trans_request.getAmount());
+			bpc.credit(trans_request);
 		}
 		catch (Exception e)	{
 			e.printStackTrace();

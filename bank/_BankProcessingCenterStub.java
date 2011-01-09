@@ -1,5 +1,7 @@
 package ebank.bank;
 
+import java.sql.SQLException;
+
 
 /**
  * Generated from IDL interface "BankProcessingCenter".
@@ -19,7 +21,7 @@ public class _BankProcessingCenterStub
 	}
 
 	public final static java.lang.Class _opsClass = ebank.bank.BankProcessingCenterOperations.class;
-	public boolean credit(long card_number, float amount) throws ebank.CardNumberException
+	public boolean credit(ebank.TransactionRequest transaction) throws ebank.CardNumberException, ClassNotFoundException, SQLException
 	{
 		while(true)
 		{
@@ -30,8 +32,7 @@ public class _BankProcessingCenterStub
 			try
 			{
 				_os = _request( "credit", true);
-				_os.write_ulonglong(card_number);
-				_os.write_float(amount);
+				ebank.TransactionRequestHelper.write(_os,transaction);
 				_is = _invoke(_os);
 				boolean _result = _is.read_boolean();
 				return _result;
@@ -88,7 +89,7 @@ public class _BankProcessingCenterStub
 			boolean _result;
 			try
 			{
-				_result = _localServant.credit(card_number,amount);
+				_result = _localServant.credit(transaction);
 			}
 			finally
 			{
@@ -101,7 +102,7 @@ public class _BankProcessingCenterStub
 
 	}
 
-	public float getBalance(long card_number) throws ebank.CardNumberException
+	public float getBalance(long card_number) throws ebank.CardNumberException, SQLException, ClassNotFoundException
 	{
 		while(true)
 		{
@@ -182,7 +183,7 @@ public class _BankProcessingCenterStub
 
 	}
 
-	public boolean debit(long card_number, float amount) throws ebank.InsufficientBalanceException,ebank.CardNumberException
+	public boolean debit(ebank.TransactionRequest transaction) throws ebank.InsufficientBalanceException,ebank.CardNumberException, SQLException, ClassNotFoundException
 	{
 		while(true)
 		{
@@ -193,8 +194,7 @@ public class _BankProcessingCenterStub
 			try
 			{
 				_os = _request( "debit", true);
-				_os.write_ulonglong(card_number);
-				_os.write_float(amount);
+				ebank.TransactionRequestHelper.write(_os,transaction);
 				_is = _invoke(_os);
 				boolean _result = _is.read_boolean();
 				return _result;
@@ -256,7 +256,7 @@ public class _BankProcessingCenterStub
 			boolean _result;
 			try
 			{
-				_result = _localServant.debit(card_number,amount);
+				_result = _localServant.debit(transaction);
 			}
 			finally
 			{

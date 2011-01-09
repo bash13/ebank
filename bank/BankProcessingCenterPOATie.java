@@ -1,5 +1,7 @@
 package ebank.bank;
 
+import java.sql.SQLException;
+
 import org.omg.PortableServer.POA;
 
 /**
@@ -48,19 +50,19 @@ public class BankProcessingCenterPOATie
 		}
 		return super._default_POA();
 	}
-	public boolean credit(long card_number, float amount) throws ebank.CardNumberException
+	public boolean credit(ebank.TransactionRequest transaction) throws ebank.CardNumberException, ClassNotFoundException, SQLException
 	{
-		return _delegate.credit(card_number,amount);
+		return _delegate.credit(transaction);
 	}
 
-	public float getBalance(long card_number) throws ebank.CardNumberException
+	public float getBalance(long card_number) throws ebank.CardNumberException, SQLException, ClassNotFoundException
 	{
 		return _delegate.getBalance(card_number);
 	}
 
-	public boolean debit(long card_number, float amount) throws ebank.InsufficientBalanceException,ebank.CardNumberException
+	public boolean debit(ebank.TransactionRequest transaction) throws ebank.InsufficientBalanceException,ebank.CardNumberException, SQLException, ClassNotFoundException
 	{
-		return _delegate.debit(card_number,amount);
+		return _delegate.debit(transaction);
 	}
 
 }

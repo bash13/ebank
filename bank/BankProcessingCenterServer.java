@@ -1,19 +1,47 @@
 package ebank.bank;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
 
 import ebank.CardNumberException;
 import ebank.InsufficientBalanceException;
+import ebank.TransactionRequest;
 
 class BankProcessingCenterImpl extends BankProcessingCenterPOA {
-
+	
 	/**
 	 * Crédite le numéro de compte de la somme indiquée
+	 * @throws ClassNotFoundException 
+	 * @throws SQLException 
 	 */
 	@Override
-	public boolean credit(long cardNumber, float amount)
-			throws CardNumberException {
+	public boolean credit(TransactionRequest transaction)
+			throws CardNumberException, ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.jdbc.Driver");
+		String url = "jdbc:mysql://localhost:3306/ebank_"+transaction.getBin();
+		Connection connection = DriverManager.getConnection(url,"ebank","ebank");
+		if (!connection.isClosed()) {			
+			String laRequette = "update ebank_compte set compte_solde = (compte_solde + ?) where compte_numero = ?";
+			PreparedStatement pstmt = connection.prepareStatement(laRequette);
+			pstmt.setFloat(1, transaction.getAmount());
+			pstmt.setLong(2, transaction.getDealer_account_number());
+			pstmt.executeUpdate();
+			
+			laRequette = "insert into ebank_transaction (transaction_date, transaction_montant, transaction_cbNumero,transaction_etat, transaction_libelle, transaction_isCbTransaction) values (CURRENT_DATE, ?, ?, ?, ?, 1)";
+			pstmt = connection.prepareStatement(laRequette);
+			pstmt.setFloat(1, transaction.getAmount());
+			pstmt.setString(2, "");
+			pstmt.setString(3, "");
+			pstmt.setString(4, "Vente E-Com");
+			pstmt.executeUpdate();
+			return true;
+		}
 		return false;
 	}
 
@@ -21,31 +49,45 @@ class BankProcessingCenterImpl extends BankProcessingCenterPOA {
 	 * Débite le compte de la somme indiquée
 	 */
 	@Override
-	public boolean debit(long cardNumber, float amount)
-			throws InsufficientBalanceException, CardNumberException {
+	public boolean debit(TransactionRequest transaction) throws InsufficientBalanceException, CardNumberException, SQLException, ClassNotFoundException {
+		Class.forName("com.mysql.jdbc.Driver");
+		String url = "jdbc:mysql://localhost:3306/ebank_"+transaction.getBin();
+		Connection connection = DriverManager.getConnection(url,"ebank","ebank");
+		if (!connection.isClosed()) {			
+			String laRequette = "update ebank_compte set compte_solde = (compte_solde - ?) where compte_idCB = ?";
+			PreparedStatement pstmt = connection.prepareStatement(laRequette);
+			pstmt.setFloat(1, transaction.getAmount());
+			pstmt.setString(2, ""+transaction.getDealer_account_number());
+			pstmt.executeUpdate();
+			return true;
+		}
 		return false;
 	}
 
 	/**
+	 * @throws ClassNotFoundException 
 	 * Renvoie le solde du compte demandée
+	 * @throws  
 	 */
 
 
 	@Override
-	public float getBalance(long card_number) throws CardNumberException {
-		if (!checkCardNumber(card_number))
-			throw new CardNumberException("Carte inconnue");
+	public float getBalance(long card_number) throws CardNumberException, SQLException, ClassNotFoundException {
+		Class.forName("com.mysql.jdbc.Driver");
+		String url = "jdbc:mysql://localhost:3306/ebank_bnp";
+		Connection connection = DriverManager.getConnection(url,"ebank","ebank");
+		if (!connection.isClosed()) {			
+			ResultSet rs;
+			String laRequette = "select SUM(compte_solde + compte_decouvertAutorise) from ebank_compte where compte_idCB = ?";
+			PreparedStatement pstmt = connection.prepareStatement(laRequette);
+			pstmt.setString(1, ""+card_number);
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				return rs.getFloat(1);
+			}
+			else return -1;
+		}
 		return 0;
-	}
-	
-	/**
-	 * Vérifier la validité du numéro de la carte bancaire
-	 * @param cardNumber
-	 * @return
-	 */
-	public boolean checkCardNumber(long cardNumber)
-	{
-		return false;		
 	}
 
 	/**

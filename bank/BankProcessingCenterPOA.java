@@ -1,5 +1,7 @@
 package ebank.bank;
 
+import java.sql.SQLException;
+
 
 /**
  * Generated from IDL interface "BankProcessingCenter".
@@ -43,15 +45,16 @@ public abstract class BankProcessingCenterPOA
 			{
 			try
 			{
-				long _arg0=_input.read_ulonglong();
-				float _arg1=_input.read_float();
+				ebank.TransactionRequest _arg0=ebank.TransactionRequestHelper.read(_input);
 				_out = handler.createReply();
-				_out.write_boolean(credit(_arg0,_arg1));
+				_out.write_boolean(credit(_arg0));
 			}
 			catch(ebank.CardNumberException _ex0)
 			{
 				_out = handler.createExceptionReply();
 				ebank.CardNumberExceptionHelper.write(_out, _ex0);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 				break;
 			}
@@ -67,6 +70,8 @@ public abstract class BankProcessingCenterPOA
 			{
 				_out = handler.createExceptionReply();
 				ebank.CardNumberExceptionHelper.write(_out, _ex0);
+			}catch (Exception e) {
+				e.printStackTrace();
 			}
 				break;
 			}
@@ -74,10 +79,9 @@ public abstract class BankProcessingCenterPOA
 			{
 			try
 			{
-				long _arg0=_input.read_ulonglong();
-				float _arg1=_input.read_float();
+				ebank.TransactionRequest _arg0=ebank.TransactionRequestHelper.read(_input);
 				_out = handler.createReply();
-				_out.write_boolean(debit(_arg0,_arg1));
+				_out.write_boolean(debit(_arg0));
 			}
 			catch(ebank.InsufficientBalanceException _ex0)
 			{
@@ -88,6 +92,8 @@ public abstract class BankProcessingCenterPOA
 			{
 				_out = handler.createExceptionReply();
 				ebank.CardNumberExceptionHelper.write(_out, _ex1);
+			}catch (Exception e) {
+				e.printStackTrace();
 			}
 				break;
 			}
