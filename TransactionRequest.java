@@ -1,7 +1,7 @@
 package ebank;
 
 /**
- * Classe représentant une transaction 
+ * Classe reprï¿½sentant une transaction 
  *
  * @author JacORB IDL compiler V 2.3.1, 27-May-2009
  * @version generated at 9 janv. 2011 18:23:44
@@ -16,7 +16,7 @@ public final class TransactionRequest implements org.omg.CORBA.portable.IDLEntit
 	public TransactionRequest(){}
 	
 	/**
-	 * Numéro de la carte
+	 * Numï¿½ro de la carte
 	 */
 	public long card_number;
 	
@@ -26,7 +26,7 @@ public final class TransactionRequest implements org.omg.CORBA.portable.IDLEntit
 	public int ccv;
 	
 	/**
-	 * Date de péremption de la carte
+	 * Date de pï¿½remption de la carte
 	 */
 	public java.lang.String date = "";
 	
@@ -36,7 +36,7 @@ public final class TransactionRequest implements org.omg.CORBA.portable.IDLEntit
 	public float amount;
 	
 	/**
-	 * Numéro de compte du marchand
+	 * Numï¿½ro de compte du marchand
 	 */
 	public int dealer_account_number;
 	
@@ -90,11 +90,12 @@ public final class TransactionRequest implements org.omg.CORBA.portable.IDLEntit
 	}
 	
 	/**
-	 * Renvoie le BIN du numéro de la carte
+	 * Renvoie le BIN du numï¿½ro de la carte
 	 * @return
 	 */
 	public Integer getBin()
 	{
-		return 0;
+		String cbString = ""+this.card_number;
+		return Integer.parseInt(cbString.substring(1,4));
 	}
 }
