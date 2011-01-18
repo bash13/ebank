@@ -1,26 +1,50 @@
 package ebank.network;
 
+import java.sql.SQLException;
+
+import org.omg.CORBA.ORBPackage.InvalidName;
 import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
 
 import ebank.CardNumberException;
 import ebank.InsufficientBalanceException;
 import ebank.TransactionRequest;
+import ebank.bank.Acquisition;
+import ebank.bank.AcquisitionHelper;
 import ebank.data.Database;
+import ebank.data.UnknowBinException;
 
 class InterbankNetworkImpl extends InterbankNetworkPOA {
 
 	/**
-	 * Connexion à la base de données
+	 * Nom de l'utilisateur de la base de donneï¿½s
 	 */
-	private Database db;
+	private static final String user_name = "ebank";	
 
 	/**
-	 * Constructeur. Crée la connexion à la base.
+	 * Mot de passe de l'utilisateur de la base de donneï¿½s
+	 */
+	private static final String password = "ebank";
+	
+	/**
+	 * Mot de passe de l'utilisateur de la base de donneï¿½s
+	 */
+	private static final String url = "jdbc:mysql://localhost/ebank_directory?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8";	
+	
+	/**
+	 * Connexion ï¿½ la base de donnï¿½es
+	 */
+	private Database db;
+	
+	private TransactionRequest transaction;
+
+	/**
+	 * Constructeur. Crï¿½e la connexion ï¿½ la base.
 	 */
 	public InterbankNetworkImpl()
 	{
-		 db = new Database();
+		 db = new Database(user_name, password, url);
+		 db.connect();
 	}
 	
 	/**
@@ -28,7 +52,32 @@ class InterbankNetworkImpl extends InterbankNetworkPOA {
 	 */
 	@Override
 	public boolean transfer(TransactionRequest transaction) {
+		this.transaction = transaction;
+		return findAcquisitionServerNameAndTransferTransactionRequest();
+	}
+	
+	private boolean findAcquisitionServerNameAndTransferTransactionRequest() {
+		String bankName="";
+		try {
+			bankName = db.findAcquisitionServerNameFromBin(transaction.getBin());
+			return transferToCorrespondingBankAcquisitionServer(bankName);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (UnknowBinException e) {
+			System.out.println("BIN inconnu: Aucune entrÃ©e disponible dans l'annuaire.");
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return false;
+	}
+	
+	private boolean transferToCorrespondingBankAcquisitionServer(String acquisitionServerName) throws Exception {
+		Acquisition acq;
+		org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init();
+		NamingContextExt nc = NamingContextExtHelper.narrow(orb.resolve_initial_references("NameService"));
+		acq = AcquisitionHelper.narrow(nc.resolve(nc.to_name(acquisitionServerName)));
+		return acq.process(transaction);
 	}
 	
 }

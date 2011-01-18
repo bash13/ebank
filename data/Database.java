@@ -15,30 +15,26 @@ public class Database {
 	
 	Connection conn;	
 
-	/**
-	 * Nom de l'utilisateur de la base de donne�s
-	 */
-	private static final String user_name = "ebank";	
-
-	/**
-	 * Mot de passe de l'utilisateur de la base de donne�s
-	 */
-	private static final String password = "ebank";
-	
-	/**
-	 * Mot de passe de l'utilisateur de la base de donne�s
-	 */
-	private static final String url = "jdbc:mysql://localhost/ebank_directory?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8";	
+	private String userName;
+	private String password;
+	private String url;
 	
 	/**
 	 * Constructeur de la classe Database. Cr�e/ouvre la connexion avec la base de donn�es.
 	 */
-	public Database()
+	public Database(String userName, String password, String url)
 	{
+		this.userName=userName;
+		this.password=password;
+		this.url=url;
+	}
+	
+	public void connect()
+	{		
         try
         {	
             Class.forName ("com.mysql.jdbc.Driver").newInstance ();
-            conn = DriverManager.getConnection (url, user_name, password);
+            conn = DriverManager.getConnection (url, userName, password);
         }
         catch (Exception e)
         {
@@ -61,21 +57,21 @@ public class Database {
 	 * @param bin Bank Identify Number de la banque.
 	 * @return Nom (Corba) du serveur d'acquisition
 	 * @throws SQLException
+	 * @throws UnknowBinException 
 	 */
-	public String retrieveAcquisitionServerNameFromBin(Integer bin) throws SQLException
-	{
+	public String findAcquisitionServerNameFromBin(Integer bin) throws SQLException, UnknowBinException	{
 		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT name FROM annuaire WHERE bin='"+bin+"';");
 		
 		if (rs.next())
 			return rs.getString("name");
 		else 
-			return null;
+			throw new UnknowBinException();
 	}
 	
 	public static void main(String arg[])
 	{
-		Database db = new Database();
+//		Database db = new Database();
 	}
 
 	
