@@ -1,8 +1,14 @@
 package ebank.bank;
 
+import java.sql.SQLException;
+
+import org.omg.CORBA.ORBPackage.InvalidName;
 import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
+import org.omg.CosNaming.NamingContextPackage.CannotProceed;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 
+import ebank.CardNumberException;
 import ebank.TransactionRequest;
 import ebank.network.InterbankNetwork;
 import ebank.network.InterbankNetworkHelper;
@@ -44,60 +50,76 @@ class AcquisitionImpl extends AcquisitionPOA {
 	 */	
 	private TransactionRequest trans_request;
 
-	public AcquisitionImpl() {
-		
-	}
+	public AcquisitionImpl() {}
 	
-	/**
-	 * 
-	 */
 	@Override
 	public boolean process(TransactionRequest transaction) {
-		if (!checkBin(trans_request.getBin())) {
-			//Banques différentes
-			//On renvoie vers le réseau interbancaire
-			try	{
-				InterbankNetwork in;
-				org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init();
-				NamingContextExt nc = NamingContextExtHelper.narrow(orb.resolve_initial_references("NameService"));
-				in = InterbankNetworkHelper.narrow(nc.resolve(nc.to_name(interbank_network_name)));
-				in.transfer(trans_request);
-			}
-			catch (Exception e)	{
-				e.printStackTrace();
-			}
-		}
+		if (trans_request.getBin()==BIN)
+			return transferTransactionRequest();
 		else {
-			//Banques identiques
-		}		
+			return treatTransactionRequest();
+		}
+	}
+	
+	private boolean transferTransactionRequest() {
+		try	{
+			return transferRequestToInterbankNetwork();
+		}
+		catch (Exception e)	{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	private boolean transferRequestToInterbankNetwork() throws Exception {
+		InterbankNetwork in;
+		org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init();
+		NamingContextExt nc = NamingContextExtHelper.narrow(orb.resolve_initial_references("NameService"));
+		in = InterbankNetworkHelper.narrow(nc.resolve(nc.to_name(interbank_network_name)));
+		return in.transfer(trans_request);
+	}
+	
+	private boolean treatTransactionRequest()
+	{
+		if (authorize()) {
+			creditClientAccount();
+			return true;
+		}
 		return false;
 	}
 	
-	/**
-	 * Indique si le BIN de la carte bancaire de l'émetteur
-	 * correspond à celui de la banque acquéreur
-	 * @param bin
-	 * @return
-	 */
-	private boolean checkBin(Integer card) {
-		return card==BIN;
+	private boolean authorize() {
+		try {
+			return askAuthorizationToAuthorizationServer();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
-	/**
-	 * Ordonne au centre de traitement bancaire de créditer un compte
-	 */
-	private void sendCreditRequestToBpc() {
+	private boolean askAuthorizationToAuthorizationServer() throws Exception {
+		Authorization auth;
+		org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init();
+		NamingContextExt nc = NamingContextExtHelper.narrow(orb.resolve_initial_references("NameService"));
+		auth = AuthorizationHelper.narrow(nc.resolve(nc.to_name(authorization_server_name)));
+		return auth.process(trans_request);
+	}
+	
+	private void creditClientAccount() {
 		try	{
-			BankProcessingCenter bpc;
-			org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init();
-			NamingContextExt nc = NamingContextExtHelper.narrow(orb.resolve_initial_references("NameService"));
-			bpc = BankProcessingCenterHelper.narrow(nc.resolve(nc.to_name(bank_processing_center_name)));
-			bpc.credit(trans_request);
+			sendCreditRequestToBankProcessCenter();
 		}
 		catch (Exception e)	{
 			e.printStackTrace();
 		}
-
+	}
+	
+	private void sendCreditRequestToBankProcessCenter() throws InvalidName, NotFound, CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName, CardNumberException, ClassNotFoundException, SQLException {
+		BankProcessingCenter bpc;
+		org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init();
+		NamingContextExt nc = NamingContextExtHelper.narrow(orb.resolve_initial_references("NameService"));
+		bpc = BankProcessingCenterHelper.narrow(nc.resolve(nc.to_name(bank_processing_center_name)));
+		bpc.credit(trans_request);
 	}
 
 }

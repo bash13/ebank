@@ -8,9 +8,6 @@ package ebank;
  */
 public final class TransactionRequest implements org.omg.CORBA.portable.IDLEntity
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public TransactionRequest(){}

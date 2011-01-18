@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * Classe représentation la base de donneés
+ * Classe reprï¿½sentation la base de donneï¿½s
  * @author aleks
  *
  */
@@ -16,22 +16,22 @@ public class Database {
 	Connection conn;	
 
 	/**
-	 * Nom de l'utilisateur de la base de donneés
+	 * Nom de l'utilisateur de la base de donneï¿½s
 	 */
 	private static final String user_name = "ebank";	
 
 	/**
-	 * Mot de passe de l'utilisateur de la base de donneés
+	 * Mot de passe de l'utilisateur de la base de donneï¿½s
 	 */
 	private static final String password = "ebank";
 	
 	/**
-	 * Mot de passe de l'utilisateur de la base de donneés
+	 * Mot de passe de l'utilisateur de la base de donneï¿½s
 	 */
-	private static final String url = "jdbc:mysql://localhost/qcm?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8";	
+	private static final String url = "jdbc:mysql://localhost/ebank_directory?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8";	
 	
 	/**
-	 * Constructeur de la classe Database. Crée/ouvre la connexion avec la base de données.
+	 * Constructeur de la classe Database. Crï¿½e/ouvre la connexion avec la base de donnï¿½es.
 	 */
 	public Database()
 	{
@@ -47,7 +47,7 @@ public class Database {
 	}
 	
 	/**
-	 * Ferme la connexion établie avec la base de données
+	 * Ferme la connexion ï¿½tablie avec la base de donnï¿½es
 	 * @throws SQLException
 	 */
 	public void close() throws SQLException
@@ -62,7 +62,7 @@ public class Database {
 	 * @return Nom (Corba) du serveur d'acquisition
 	 * @throws SQLException
 	 */
-	public String getAcquisitionServerNameFromBin(Integer bin) throws SQLException
+	public String retrieveAcquisitionServerNameFromBin(Integer bin) throws SQLException
 	{
 		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery("SELECT name FROM annuaire WHERE bin='"+bin+"';");
