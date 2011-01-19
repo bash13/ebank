@@ -24,7 +24,7 @@ class BankProcessingCenterImpl extends BankProcessingCenterPOA {
 	public boolean credit(TransactionRequest transaction)
 			throws CardNumberException, ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
-		String url = "jdbc:mysql://localhost:3306/ebank_"+transaction.getBin();
+		String url = "jdbc:mysql://localhost:3306/ebank_"+transaction.getDealer_bank_number();
 		Connection connection = DriverManager.getConnection(url,"ebank","ebank");
 		if (!connection.isClosed()) {			
 			String laRequette = "update ebank_compte set compte_solde = (compte_solde + ?) where compte_numero = ?";

@@ -37,6 +37,11 @@ public final class TransactionRequest implements org.omg.CORBA.portable.IDLEntit
 	 */
 	public int dealer_account_number;
 	
+	/**
+	 * Numéro de banque du marchand
+	 */
+	public int dealer_bank_number;
+	
 	public long getCard_number() {
 		return card_number;
 	}
@@ -77,6 +82,14 @@ public final class TransactionRequest implements org.omg.CORBA.portable.IDLEntit
 		this.dealer_account_number = dealer_account_number;
 	}
 
+	public int getDealer_bank_number() {
+		return dealer_bank_number;
+	}
+
+	public void setDealer_bank_number(int dealer_bank_number) {
+		this.dealer_bank_number = dealer_bank_number;
+	}
+
 	public TransactionRequest(long card_number, int ccv, java.lang.String date, float amount, int dealer_account_number)
 	{
 		this.card_number = card_number;
@@ -95,4 +108,5 @@ public final class TransactionRequest implements org.omg.CORBA.portable.IDLEntit
 		String cbString = ""+this.card_number;
 		return Integer.parseInt(cbString.substring(1,4));
 	}
+
 }
