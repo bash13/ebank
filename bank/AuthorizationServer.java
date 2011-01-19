@@ -32,10 +32,33 @@ class AuthorizationImpl extends AuthorizationPOA {
 	/**
 	 * Nom (Corba) du réseau interbancaire
 	 */
-	
 	private static final String interbank_network_name = "SIT";
 	
+	/**
+	 * Nom de l'utilisateur de la base de donne�s
+	 */
+	private static final String user_name = "ebank";	
+
+	/**
+	 * Mot de passe de l'utilisateur de la base de donne�s
+	 */
+	private static final String password = "ebank";
+	
+	/**
+	 * Mot de passe de l'utilisateur de la base de donne�s
+	 */
+	private static final String url = "jdbc:mysql://localhost/ebank_directory?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8";	
+	
+	
+	private TransactionRequest transaction;
+	
+	private Database db;
+	
 	String BIN="";
+	
+//	public void AuthorizationServer() {
+//		db = new Database(user_name, password, url);
+//	}
 	
 	/**
 	 * Demande de transaction
@@ -44,19 +67,14 @@ class AuthorizationImpl extends AuthorizationPOA {
 	public boolean process(TransactionRequest transaction) {
 		BIN = ""+transaction.getBin();
 		try{
-			BankProcessingCenter bpc;
-			org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init();
-			NamingContextExt nc = NamingContextExtHelper.narrow(orb.resolve_initial_references("NameService"));
-			bpc = BankProcessingCenterHelper.narrow(nc.resolve(nc.to_name(bank_processing_center_name)));
-			
-			if(this.doesCardExist(transaction)){ // La carte existe ?
-				if(this.isActive(transaction.getCard_number())){ // La carte est active ?
-					float debitMaxAutoriseEnCours = this.getDebitMaxEnCours(transaction.getCard_number());
+			if(doesCardExist(transaction)){
+				if(isActive(transaction.getCard_number())){ // La carte est active ?
+					float debitMaxAutoriseEnCours = getDebitMaxEnCours(transaction.getCard_number());
 					if(debitMaxAutoriseEnCours > transaction.getAmount()){ // debit hebdomadaire OK ?
 						
-						if(this.isSoldeSufficient(transaction.getCard_number(), transaction.getAmount())){ // Solde + Decouvert permettent le débit ?
-							this.sendDebitRequestToBpc(transaction);
-							this.setEnCours(transaction.getCard_number(),transaction.getAmount());
+						if(isSoldeSufficient(transaction.getCard_number(), transaction.getAmount())){ // Solde + Decouvert permettent le débit ?
+							debitClientAccount(transaction);
+							setEnCours(transaction.getCard_number(),transaction.getAmount());
 							System.out.println("demande de transaction OK");
 						}
 						else{
@@ -134,17 +152,21 @@ class AuthorizationImpl extends AuthorizationPOA {
 		return 0;
 	}
 	
-	public void sendDebitRequestToBpc(TransactionRequest transaction){
+	private void debitClientAccount(TransactionRequest transaction) {
 		try	{
-			BankProcessingCenter bpc;
-			org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init();
-			NamingContextExt nc = NamingContextExtHelper.narrow(orb.resolve_initial_references("NameService"));
-			bpc = BankProcessingCenterHelper.narrow(nc.resolve(nc.to_name(bank_processing_center_name)));
-			bpc.debit(transaction);
+			sendDebitRequestToBankProcessCenter(transaction);
 		}
 		catch (Exception e)	{
 			e.printStackTrace();
-		}
+		}		
+	}
+	
+	public void sendDebitRequestToBankProcessCenter(TransactionRequest transaction) throws Exception{
+		BankProcessingCenter bpc;
+		org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init();
+		NamingContextExt nc = NamingContextExtHelper.narrow(orb.resolve_initial_references("NameService"));
+		bpc = BankProcessingCenterHelper.narrow(nc.resolve(nc.to_name(bank_processing_center_name)));
+		bpc.debit(transaction);
 	}
 
 	private Boolean isSoldeSufficient(long numeroCarte, float montant) throws InvalidName, NotFound, CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName, CardNumberException, ClassNotFoundException, SQLException {

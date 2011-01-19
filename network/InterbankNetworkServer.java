@@ -29,8 +29,9 @@ class InterbankNetworkImpl extends InterbankNetworkPOA {
 	/**
 	 * Mot de passe de l'utilisateur de la base de donne�s
 	 */
-	private static final String url = "jdbc:mysql://localhost/ebank_directory?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8";	
-	
+//	private static final String url = "jdbc:mysql://localhost/ebank_directory?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8";	
+	private static final String url = "jdbc:mysql://localhost/ebank_directory";	
+		
 	/**
 	 * Connexion � la base de donn�es
 	 */

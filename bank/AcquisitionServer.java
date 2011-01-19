@@ -130,11 +130,6 @@ class AcquisitionImpl extends AcquisitionPOA {
  *
  */
 public class AcquisitionServer {
-	
-	/**
-	 * Nom (Corba) du serveur d'acquisition
-	 */
-	private static final String acquisition_server_name = "SA";
 
 	/**
 	 * @param args
@@ -142,6 +137,7 @@ public class AcquisitionServer {
 	public static void main(String[] args) {
 		org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(args, null);
 		try	{
+			String acquisitionServerName = "";
 			org.omg.PortableServer.POA poa =
 			org.omg.PortableServer.POAHelper.narrow(
 			orb.resolve_initial_references("RootPOA"));
@@ -150,8 +146,8 @@ public class AcquisitionServer {
 			NamingContextExt nc =
 			NamingContextExtHelper.narrow(
 			orb.resolve_initial_references("NameService"));
-			nc.bind( nc.to_name(acquisition_server_name), o);
-			System.out.println("AcquisitionServer is running...");
+			nc.bind( nc.to_name(acquisitionServerName), o);
+			System.out.println("AcquisitionServer " + acquisitionServerName + " is running...");
 		}
 		catch ( Exception e ) {
 			e.printStackTrace();
