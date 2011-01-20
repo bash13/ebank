@@ -61,7 +61,7 @@ public class Database {
 	 */
 	public String findAcquisitionServerNameFromBin(Integer bin) throws SQLException, UnknowBinException	{
 		Statement stmt = conn.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT name FROM annuaire WHERE bin='"+bin+"';");
+		ResultSet rs = stmt.executeQuery("SELECT name FROM directory WHERE bin='"+bin+"';");
 		
 		if (rs.next())
 			return rs.getString("name");

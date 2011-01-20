@@ -103,10 +103,10 @@ public final class TransactionRequest implements org.omg.CORBA.portable.IDLEntit
 	 * Renvoie le BIN du num�ro de la carte
 	 * @return
 	 */
-	public Integer getBin()
+	public String getBin()
 	{
 		String cbString = ""+this.card_number;
-		return Integer.parseInt(cbString.substring(1,4));
+		return cbString.substring(1,4);
 	}
 
 }

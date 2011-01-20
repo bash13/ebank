@@ -60,7 +60,7 @@ class InterbankNetworkImpl extends InterbankNetworkPOA {
 	private boolean findAcquisitionServerNameAndTransferTransactionRequest() {
 		String bankName="";
 		try {
-			bankName = db.findAcquisitionServerNameFromBin(transaction.getBin());
+			bankName = db.findAcquisitionServerNameFromBin(Integer.parseInt(transaction.getBin()));
 			return transferToCorrespondingBankAcquisitionServer(bankName);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -75,7 +75,7 @@ class InterbankNetworkImpl extends InterbankNetworkPOA {
 	
 	private boolean transferToCorrespondingBankAcquisitionServer(String acquisitionServerName) throws Exception {
 		Acquisition acq;
-		org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init();
+		org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init( (String[])null, null);
 		NamingContextExt nc = NamingContextExtHelper.narrow(orb.resolve_initial_references("NameService"));
 		acq = AcquisitionHelper.narrow(nc.resolve(nc.to_name(acquisitionServerName)));
 		return acq.process(transaction);
@@ -99,7 +99,7 @@ public class InterbankNetworkServer {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(args, null);
+		org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init( (String[])null, null);
 		try	{
 			org.omg.PortableServer.POA poa =
 			org.omg.PortableServer.POAHelper.narrow(

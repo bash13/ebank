@@ -24,7 +24,7 @@ public class AcquisitionImpl extends AcquisitionPOA {
 	/**
 	 * Bank Identify Number
 	 */
-	private static final Integer BIN = 4097;	
+	private static final String BIN = "974";	
 
 	/**
 	 * Nom (Corba) du serveur d'autorisation
@@ -56,7 +56,7 @@ public class AcquisitionImpl extends AcquisitionPOA {
 	@Override
 	public boolean process(TransactionRequest transaction) {
 		trans_request=transaction;
-		if (trans_request.getBin()==BIN)
+		if (!trans_request.getBin().equals(BIN))
 			return transferTransactionRequest();
 		else {
 			return treatTransactionRequest();
