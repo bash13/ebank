@@ -1,21 +1,9 @@
 package ebank.bank;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.omg.CORBA.ORBPackage.InvalidName;
 import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
-import org.omg.CosNaming.NamingContextPackage.CannotProceed;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 
-import ebank.CardNumberException;
-import ebank.InsufficientBalanceException;
-import ebank.TransactionRequest;
-import ebank.data.Database;
+import ebank.tools.ArgumentParser;
 
 
 
@@ -26,32 +14,59 @@ import ebank.data.Database;
  */
 public class AuthorizationServer {
 	
-	/**
-	 * Nom (Corba) du serveur d'acquisition
-	 */
-	private static final String authorization_server_name = "SAA";
-
+	private static String bin = "974";
+	private static String authorizationServerName = "SAA";
+	private static String bankProcessingCenterName = "CTB";
+	
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-		org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init(args, null);
+	public static void main(String[] args) {		
+
+		parseArgumentsAndDisplayCorrespondingInformations(args);
+		
+		org.omg.CORBA.ORB orb = org.omg.CORBA.ORB.init((String[])null, null);
 		try	{
 			org.omg.PortableServer.POA poa =
 			org.omg.PortableServer.POAHelper.narrow(
 			orb.resolve_initial_references("RootPOA"));
 			poa.the_POAManager().activate();
-			org.omg.CORBA.Object o = poa.servant_to_reference(new AuthorizationImpl());
+			org.omg.CORBA.Object o = poa.servant_to_reference(new AuthorizationImpl(bin, bankProcessingCenterName));
 			NamingContextExt nc =
 			NamingContextExtHelper.narrow(
 			orb.resolve_initial_references("NameService"));
-			nc.bind( nc.to_name(authorization_server_name), o);
-			System.out.println("AuthorizationServer is running...");
+			nc.bind( nc.to_name(authorizationServerName), o);
+			System.out.println("AuthorizationServer ("+authorizationServerName+") is running...");
 		}
 		catch ( Exception e ) {
 			e.printStackTrace();
 		}
 		orb.run();
+	}
+	
+	private static void printUsage() {
+        String format = "%20s - %s\n";
+        System.out.printf(format, "[--<option>[=arg]]", "action:");
+        System.out.println();
+        System.out.printf(format, "help", "print this help");
+        System.out.printf(format, "auth", "specify corba name for authorization server (default is: " + authorizationServerName + ")");
+        System.out.printf(format, "center", "specify corba name for Bank process center (default is: " + bankProcessingCenterName + ")");
+    }
+	
+	private static void parseArgumentsAndDisplayCorrespondingInformations(String[] args) {
+		ArgumentParser params = new ArgumentParser(args);
+		
+        if (params.hasOption("help")) { 
+        	printUsage(); 
+        	System.exit(0); 
+        }
+		if (params.hasOption("center"))
+			bankProcessingCenterName=params.getOption("center");
+		if (params.hasOption("auth"))
+			authorizationServerName=params.getOption("auth");
+		if (params.hasOption("bin"))
+			bin=params.getOption("bin");
+		
 	}
 	
 }

@@ -9,10 +9,13 @@ public class WebService {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		TransactionRequest transaction = new TransactionRequest(Long.parseLong("497300000000000000"), 810, "", 0, 1);
-		AcquisitionImpl acq = new AcquisitionImpl();
+		TransactionRequest transaction = new TransactionRequest(Long.parseLong("4973216382122585"), 790, "", 50, 2, 973);
+		AcquisitionImpl acq = new AcquisitionImpl("974", "SAA1", "CTB1", "SIT");
 		System.out.println("Appel du serveur d'acquisition");
-		acq.process(transaction);
+		if (acq.process(transaction))
+			System.out.println("Transaction succeed!!");
+		else 
+			System.out.println("Transaction failed!!");			
 	}
 
 }

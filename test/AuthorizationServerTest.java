@@ -12,7 +12,7 @@ public class AuthorizationServerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		auth = new AuthorizationImpl();
+		auth = new AuthorizationImpl(null, null);
 	}
 
 	@After

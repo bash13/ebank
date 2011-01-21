@@ -1,4 +1,4 @@
-package ebank.bank;
+package ebank.test;
 
 import static org.junit.Assert.*;
 
@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ebank.TransactionRequest;
+import ebank.bank.AuthorizationImpl;
 
 public class AuthorizationImplTest {
 	
@@ -14,7 +15,7 @@ public class AuthorizationImplTest {
 
 	@Before
 	public void setUp() throws Exception {
-		auth = new AuthorizationImpl();
+		auth = new AuthorizationImpl(null, null);
 	}
 
 	@After
@@ -24,8 +25,8 @@ public class AuthorizationImplTest {
 
 	@Test
 	public void testProcess() {
-		TransactionRequest transaction = new TransactionRequest(Long.parseLong("497300000000000000"), 810, "", 1500, 10);
-		auth.process(transaction);
+//		TransactionRequest transaction = new TransactionRequest(Long.parseLong("497300000000000000"), 810, "", 1500, 10);
+//		auth.process(transaction);
 		fail("Not yet implemented");
 	}
 

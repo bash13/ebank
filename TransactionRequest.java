@@ -90,13 +90,14 @@ public final class TransactionRequest implements org.omg.CORBA.portable.IDLEntit
 		this.dealer_bank_number = dealer_bank_number;
 	}
 
-	public TransactionRequest(long card_number, int ccv, java.lang.String date, float amount, int dealer_account_number)
+	public TransactionRequest(long card_number, int ccv, java.lang.String date, float amount, int dealer_account_number, int dealer_bank_number)
 	{
 		this.card_number = card_number;
 		this.ccv = ccv;
 		this.date = date;
 		this.amount = amount;
 		this.dealer_account_number = dealer_account_number;
+		this.dealer_bank_number = dealer_bank_number;
 	}
 	
 	/**
