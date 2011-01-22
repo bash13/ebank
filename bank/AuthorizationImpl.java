@@ -102,7 +102,7 @@ public class AuthorizationImpl extends AuthorizationPOA {
 		System.out.println("Searching card...");
 		System.out.println(transaction.getCard_number());
 		Class.forName("com.mysql.jdbc.Driver");
-		String url = "jdbc:mysql://localhost:3306/ebank_"+transaction.getBin();
+		String url = "jdbc:mysql://localhost:3306/ebank_"+bin;
 		Connection connection = DriverManager.getConnection(url,"ebank","ebank");
 		if (!connection.isClosed()) {			
 			ResultSet rs;
