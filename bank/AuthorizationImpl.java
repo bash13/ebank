@@ -102,8 +102,7 @@ public class AuthorizationImpl extends AuthorizationPOA {
 		System.out.println("Searching card...");
 		System.out.println(transaction.getCard_number());
 		Class.forName("com.mysql.jdbc.Driver");
-		//TODO Modifier pour que la base de données soit specifique à la banque
-		String url = "jdbc:mysql://localhost:3306/ebank_"+bin;
+		String url = "jdbc:mysql://localhost:3306/ebank_"+transaction.getBin();
 		Connection connection = DriverManager.getConnection(url,"ebank","ebank");
 		if (!connection.isClosed()) {			
 			ResultSet rs;
@@ -121,8 +120,9 @@ public class AuthorizationImpl extends AuthorizationPOA {
 	
 	private boolean isActive(long numeroCarte) throws Exception {
 		System.out.println("Search card status...");
+		
 		Class.forName("com.mysql.jdbc.Driver");
-		String url = "jdbc:mysql://localhost:3306/ebank_"+bin;
+		String url = "jdbc:mysql://localhost:3306/ebank_"+this.bin;
 		Connection connection = DriverManager.getConnection(url,"ebank","ebank");
 		if (!connection.isClosed()) {			
 			ResultSet rs;
@@ -139,7 +139,7 @@ public class AuthorizationImpl extends AuthorizationPOA {
 	
 	public float getDebitMaxEnCours(long numeroCarte) throws Exception { // debit max que l'encours permet de débiter
 		Class.forName("com.mysql.jdbc.Driver");
-		String url = "jdbc:mysql://localhost:3306/ebank_"+bin;
+		String url = "jdbc:mysql://localhost:3306/ebank_"+this.bin;
 		Connection connection = DriverManager.getConnection(url,"ebank","ebank");
 		if (!connection.isClosed()) {			
 			ResultSet rs;

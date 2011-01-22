@@ -28,7 +28,7 @@ public class BankProcessingCenterImpl extends BankProcessingCenterPOA {
 			throws CardNumberException, ClassNotFoundException, SQLException {
 		System.out.println("Credit dealer in progress...");
 		Class.forName("com.mysql.jdbc.Driver");
-		String url = "jdbc:mysql://localhost:3306/ebank_"+bin;
+		String url = "jdbc:mysql://localhost:3306/ebank_"+this.bin;
 		Connection connection = DriverManager.getConnection(url,"ebank","ebank");
 		if (!connection.isClosed()) {			
 			String laRequette = "update ebank_compte set compte_solde = (compte_solde + ?) where compte_numero = ?";
@@ -37,16 +37,14 @@ public class BankProcessingCenterImpl extends BankProcessingCenterPOA {
 			pstmt.setLong(2, transaction.getDealer_account_number());
 			pstmt.executeUpdate();
 			
-			//TODO Ajouter un nouveau champ qui le lien la transaction et un compte par le compte_numero
-//			laRequette = "insert into ebank_transaction (transaction_date, transaction_montant, transaction_cbNumero, transaction_etat, transaction_libelle, transaction_isCbTransaction) values (CURRENT_DATE, ?, ?, ?, ?, 1)";
-//			pstmt = connection.prepareStatement(laRequette);
-//			pstmt.setFloat(1, transaction.getAmount());
-//			
-//			pstmt.setLong(2, transaction.getDealer_account_number());
-//			pstmt.setString(3, "");
-//			pstmt.setString(4, "Vente E-Com");
-//			System.out.println(pstmt);
-//			pstmt.executeUpdate();
+			laRequette = "insert into ebank_transaction (transaction_date, transaction_montant, transaction_compteNumero, transaction_etat, transaction_libelle, transaction_isCbTransaction) values (CURRENT_DATE, ?, ?, ?, ?, 1)";
+			pstmt = connection.prepareStatement(laRequette);
+			pstmt.setFloat(1, transaction.getAmount());			
+			pstmt.setLong(2, transaction.getDealer_account_number());
+			pstmt.setString(3, "OK");
+			pstmt.setString(4, "Vente E-Com");
+			System.out.println(pstmt);
+			pstmt.executeUpdate();
 			return true;
 		}
 		return false;
@@ -68,7 +66,14 @@ public class BankProcessingCenterImpl extends BankProcessingCenterPOA {
 			pstmt.setString(2, ""+transaction.getCard_number());
 			pstmt.executeUpdate();
 			
-			//TODO Insérer en base la transaction de DEBIT faites sur le comptes du client
+			laRequette = "insert into ebank_transaction (transaction_date, transaction_montant, transaction_cbNumero, transaction_etat, transaction_libelle, transaction_isCbTransaction) values (CURRENT_DATE, ?, ?, ?, ?, 1)";
+			pstmt = connection.prepareStatement(laRequette);
+			pstmt.setFloat(1, -transaction.getAmount());			
+			pstmt.setLong(2, transaction.getCard_number());
+			pstmt.setString(3, "OK");
+			pstmt.setString(4, "Achat sur E-Com");
+			System.out.println(pstmt);
+			pstmt.executeUpdate();
 			
 			return true;
 		}
