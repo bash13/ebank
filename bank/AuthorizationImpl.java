@@ -77,15 +77,20 @@ public class AuthorizationImpl extends AuthorizationPOA {
 	private boolean doesCardExist(TransactionRequest transaction) throws Exception {
 		System.out.println("Searching card...");
 		System.out.println(transaction.getCard_number());
+		
+		String[] dateSplit = transaction.getDate().split("/");
+		
+		
 		Class.forName("com.mysql.jdbc.Driver");
 		String url = "jdbc:mysql://localhost:3306/ebank_"+bin;
 		Connection connection = DriverManager.getConnection(url,"ebank","ebank");
 		if (!connection.isClosed()) {			
 			ResultSet rs;
-			String laRequette = "select cb_numero from ebank_cb where cb_numero = ? and cb_ccv = ?";
+			String laRequette = "select cb_numero from ebank_cb where cb_numero = ? and cb_ccv = ? and cb_dateExpiration = ?";
 			PreparedStatement pstmt = connection.prepareStatement(laRequette);
 			pstmt.setString(1, ""+transaction.getCard_number());
 			pstmt.setInt(2, transaction.getCcv());
+			pstmt.setString(1, dateSplit[2]+"-"+dateSplit[1]+"-"+dateSplit[0]);
 			rs = pstmt.executeQuery();
 			if(rs.next()) return true;
 			return false;			
