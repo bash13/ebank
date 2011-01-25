@@ -65,7 +65,7 @@ public class AcquisitionImpl extends AcquisitionPOA {
 			System.out.println("Transaction request processing...");
 			return treatTransactionRequest();
 		}
-	}
+	}	
 	
 	private boolean transferTransactionRequest() {
 		try	{

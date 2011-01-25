@@ -4,21 +4,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
-import org.omg.CORBA.ORBPackage.InvalidName;
 import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
-import org.omg.CosNaming.NamingContextPackage.CannotProceed;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 
 import ebank.CardNumberException;
 import ebank.InsufficientBalanceException;
 import ebank.TransactionRequest;
-import ebank.data.Database;
 import ebank.exception.InactiveCardException;
 import ebank.exception.InsufficientWeeklyDebitMaxException;
 
+//TODO utiliser la classe Database pour la connexion vers la base de données et y insérer les différentes requêtes
 public class AuthorizationImpl extends AuthorizationPOA {
 		
 	/**
@@ -26,30 +22,11 @@ public class AuthorizationImpl extends AuthorizationPOA {
 	 */
 	private String bankProcessingCenterName;
 	
-	private String bin;
-	
-	
-	/**
-	 * Nom de l'utilisateur de la base de donne�s
-	 */
-	private static final String user_name = "ebank";	
-
-	/**
-	 * Mot de passe de l'utilisateur de la base de donne�s
-	 */
-	private static final String password = "ebank";
-	
-	/**
-	 * Mot de passe de l'utilisateur de la base de donne�s
-	 */
-	private static final String url = "jdbc:mysql://localhost/ebank_directory?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8";	
-		
-	private Database db;	
+	private String bin;	
 		
 	public AuthorizationImpl(String bin, String bankProcessingCenterName) {
 		this.bin=bin;
 		this.bankProcessingCenterName=bankProcessingCenterName;
-//		db = new Database(user_name, password, url);
 	}
 	
 	@Override
@@ -80,8 +57,7 @@ public class AuthorizationImpl extends AuthorizationPOA {
 		}
 		System.out.println("Transaction succeed...");
 		return true;
-	}
-	
+	}	
 	
 	private void checkCardCharacteristics(TransactionRequest transaction) throws Exception  {
 		System.out.println("Check card characteristics in progress...");
@@ -114,15 +90,14 @@ public class AuthorizationImpl extends AuthorizationPOA {
 			if(rs.next()) return true;
 			return false;			
 		}
-		return false;
-	
+		return false;	
 	}
 	
 	private boolean isActive(long numeroCarte) throws Exception {
 		System.out.println("Search card status...");
 		
 		Class.forName("com.mysql.jdbc.Driver");
-		String url = "jdbc:mysql://localhost:3306/ebank_"+this.bin;
+		String url = "jdbc:mysql://localhost:3306/ebank_"+bin;
 		Connection connection = DriverManager.getConnection(url,"ebank","ebank");
 		if (!connection.isClosed()) {			
 			ResultSet rs;
@@ -139,7 +114,7 @@ public class AuthorizationImpl extends AuthorizationPOA {
 	
 	public float getDebitMaxEnCours(long numeroCarte) throws Exception { // debit max que l'encours permet de débiter
 		Class.forName("com.mysql.jdbc.Driver");
-		String url = "jdbc:mysql://localhost:3306/ebank_"+this.bin;
+		String url = "jdbc:mysql://localhost:3306/ebank_"+bin;
 		Connection connection = DriverManager.getConnection(url,"ebank","ebank");
 		if (!connection.isClosed()) {			
 			ResultSet rs;
