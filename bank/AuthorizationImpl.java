@@ -87,7 +87,7 @@ public class AuthorizationImpl extends AuthorizationPOA {
 			PreparedStatement pstmt = connection.prepareStatement(laRequette);
 			pstmt.setString(1, ""+transaction.getCard_number());
 			pstmt.setInt(2, transaction.getCcv());
-			pstmt.setString(1, transaction.getDate());
+			pstmt.setString(3, transaction.getDate());
 			rs = pstmt.executeQuery();
 			if(rs.next()) return true;
 			return false;			
