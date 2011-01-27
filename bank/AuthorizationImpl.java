@@ -75,9 +75,7 @@ public class AuthorizationImpl extends AuthorizationPOA {
 	}
 
 	private boolean doesCardExist(TransactionRequest transaction) throws Exception {
-		System.out.println("Searching card...");
-		System.out.println(transaction.getCard_number());
-		
+		System.out.println("Searching card...");		
 		Class.forName("com.mysql.jdbc.Driver");
 		String url = "jdbc:mysql://localhost:3306/ebank_"+bin;
 		Connection connection = DriverManager.getConnection(url,"ebank","ebank");
@@ -88,6 +86,7 @@ public class AuthorizationImpl extends AuthorizationPOA {
 			pstmt.setString(1, ""+transaction.getCard_number());
 			pstmt.setInt(2, transaction.getCcv());
 			pstmt.setString(3, transaction.getDate());
+			System.out.println(laRequette);
 			rs = pstmt.executeQuery();
 			if(rs.next()) return true;
 			return false;			
